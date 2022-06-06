@@ -5,17 +5,19 @@
  https://opensource.org/licenses/MIT
 -->
 
-# WS-BI-RPC
+# ABI-RPC
 
-Bidirectional RPC based on WebSocket.
+An abstract bidirectional RPC framework.
 
 ## Easy to use
 ```ts
-import { WebSocketServer,WebSocket ,WebSocketRPC } from "..";
-
 class ServerHander {
     say(message: string) {
         console.log('message from client:', message)
+    }
+    echo(message:string){
+        console.log('echo:', message)
+        return message;
     }
 }
 class ClientHander {
@@ -23,22 +25,13 @@ class ClientHander {
         console.log('message from server :', message)
     }
 }
-const server = new WebSocketServer({ host: 'localhost', port: 8899 });
-server.on('connection', async (socket) => {
-    const rpc = new WebSocketRPC<ClientHander>(socket, new ServerHander);
-    await rpc.call('test', 'hello');
-});
+let server:ABIRPC<ClientHander>;
 
+const client = new ABIRPC<ServerHander>(x=>server.handle(x), new ClientHander);
 
-const ws = new WebSocket('ws://localhost:8899');
-
-ws.on('open', async () => {
-    const client = new WebSocketRPC<ServerHander>(ws, new ClientHander);
-    await client.call('say', 'say message');
-})
-
-
-// message from server : hello
-// message from client: say message
+server = new ABIRPC<ClientHander>(x=>client.handle(x), new ServerHander);
+server.call('test', 'hello');
+client.call('say', 'say message');
+client.call('echo', 'echo message').then(x=>console.log('echo result',x));
 
 ```

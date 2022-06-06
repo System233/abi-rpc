@@ -36,7 +36,7 @@ export const GetABIPRC=<T extends Record<string, any>>(target:object)=>{
 
 export class ABIRPC<T extends Record<string, any>> extends EventEmitter {
     private timeout: number;
-    constructor(public send: <T>(data:WebSocketData<T>,err:(error:Error)=>void)=>void, public handler: Record<string, any>, public option?: ABIRPCOption) {
+    constructor(public sender: <T>(data:WebSocketData<T>,err:(error:Error)=>void)=>void, public handler: Record<string, any>, public option?: ABIRPCOption) {
         super();
         Reflect.set(handler,kABIRPCI,this);
         this.timeout = option?.timeout || 10000;
@@ -95,7 +95,7 @@ export class ABIRPC<T extends Record<string, any>> extends EventEmitter {
     }
     response(response: ABIRPCResponse) {
         const { id, name, data, message, code } = response;
-        return new Promise<void>((resolve, reject) => this.send({type:'response',id, name, data, message, code}, (err) => err ? reject(err) : resolve()));
+        return new Promise<void>((resolve, reject) => this.sender({type:'response',id, name, data, message, code}, (err) => err ? reject(err) : resolve()));
     }
     request<T>(request: ABIRPCRequest) {
         return new Promise<T>((resolve, reject) => {
@@ -116,7 +116,7 @@ export class ABIRPC<T extends Record<string, any>> extends EventEmitter {
                 reject(e);
             }
             this.once(id, handler);
-            this.send({
+            this.sender({
                 type: 'request',
                 name,
                 id,
