@@ -7,7 +7,7 @@
 import { EventEmitter } from "events";
 import { nanoid } from "nanoid";
 
-
+const kABIRPCI=Symbol("kABIRPCI");
 export interface ABIRPCRequest<T = any> {
     type?: 'request',
     id?: string;
@@ -30,10 +30,15 @@ export class ABIRPCError extends Error { };
 export interface ABIRPCOption {
     timeout?: number;
 }
+export const GetABIPRC=<T extends Record<string, any>>(target:object)=>{
+    return Reflect.get(target,kABIRPCI) as ABIRPC<T>;
+}
+
 export class ABIRPC<T extends Record<string, any>> extends EventEmitter {
     private timeout: number;
     constructor(public send: <T>(data:WebSocketData<T>,err:(error:Error)=>void)=>void, public handler: Record<string, any>, public option?: ABIRPCOption) {
         super();
+        Reflect.set(handler,kABIRPCI,this);
         this.timeout = option?.timeout || 10000;
     }
 
