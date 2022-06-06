@@ -1,0 +1,38 @@
+{
+  "name": "abi-rpc",
+  "version": "0.0.1",
+  "description": "An abstract bidirectional RPC framework.",
+  "main": "dist/cjs/index.js",
+  "types": "index.ts",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "test": "npx ts-node tests/test.ts",
+    "clean": "rm -rf dist",
+    "build": "npm run build:esm&&npm run build:cjs",
+    "build:cjs": "npx tsc",
+    "build:esm": "npx tsc -p tsconfig.esm.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/System233/abi-rpc.git"
+  },
+  "keywords": [
+    "abstract",
+    "bidirectional",
+    "RPC",
+    "framework"
+  ],
+  "author": "System233",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/System233/abi-rpc/issues"
+  },
+  "homepage": "https://github.com/System233/abi-rpc#readme",
+  "dependencies": {
+    "nanoid": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.40",
+    "typescript": "^4.6.4"
+  }
+}
