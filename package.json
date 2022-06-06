@@ -1,6 +1,6 @@
 {
   "name": "abi-rpc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An abstract bidirectional RPC framework.",
   "main": "dist/cjs/index.js",
   "types": "index.ts",
